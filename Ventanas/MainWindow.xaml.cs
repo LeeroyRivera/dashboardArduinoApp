@@ -1,5 +1,9 @@
-﻿using System;
+﻿using dashboardArduinoApp.Clases;
+using LiveCharts;
+using LiveCharts.Wpf;
+using System;
 using System.IO.Ports;
+using System.Reflection.Emit;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -28,13 +32,35 @@ namespace dashboardArduinoApp
         public MainWindow()
         {
             InitializeComponent();
+
             defaultBrushBtnSalir = BtnSalir.Background;
             defaultBrushBtnMinimizar = BtnMinimizar.Background;
-            Arduino= new SerialPort();
+
+            Arduino = new SerialPort();
             Arduino.PortName = "COM5";
             Arduino.BaudRate = 9600;
             Arduino.ReadTimeout = 1000;
+
+            a = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Values = new ChartValues<double> { 3, 5, 7, 4 }
+                }
+            };
+            b = new SeriesCollection
+            {
+                new LineSeries
+                {
+                    Values = new ChartValues<double> { 10, 5, 27, 14 }
+                }
+            };
+            DataContext = this;
         }
+
+        public SeriesCollection a { get; set; }
+        public SeriesCollection b { get; set; }
+
 
         private void Border_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {  
@@ -102,30 +128,43 @@ namespace dashboardArduinoApp
             Arduino.Close();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
+
+
+        private void RadioButton_Checked(object sender, RoutedEventArgs e)
         {
-            Arduino.Open();
-            string txt = string.Empty;
-
-            new Thread(() =>
-            {
-
-                while (!Arduino.IsOpen)
-                {
-                    try
-                    {
-                        string txt = Arduino.ReadLine();
 
 
-                    }
-                    catch (Exception)
-                    {
+            //try
+            //{
+            //    Arduino.Open();
+            //}
+            //catch (Exception)
+            //{
 
-                        throw;
-                    }
-                }
-                Dispatcher.BeginInvoke(() => txtPrueba.Text = txt);
-            }).Start();
+            //    throw;
+            //}
+
+            //string txt = string.Empty;
+
+            //new Thread(() =>
+            //{
+
+            //    while (!Arduino.IsOpen)
+            //    {
+            //        try
+            //        {
+            //            string txt = Arduino.ReadLine();
+
+
+            //        }
+            //        catch (Exception)
+            //        {
+
+            //            throw;
+            //        }
+            //    }
+            //    Dispatcher.BeginInvoke(() => txtPrueba.Text = txt);
+            //}).Start();
         }
     }
 }

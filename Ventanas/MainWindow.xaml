@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:dashboardArduinoApp"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="dashboardArduinoApp.MainWindow"
+        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
         TextElement.FontWeight="Regular"
@@ -38,18 +39,90 @@
                     <ColumnDefinition Width="25*"/>
                     <ColumnDefinition Width="100*"/>
                 </Grid.ColumnDefinitions>
-                
+
                 <Border Grid.Column="0" Background="#FF1E1F22" Margin="10,-1,0,-1" CornerRadius="0,0,0,0"/>
-                
-                <StackPanel Orientation="Vertical">
-                    <RadioButton Content="Menu" Margin="10">
+
+                <StackPanel>
+
+                    <RadioButton Content="Dashboard"
+                                 Height="50"
+                                 Margin="10,0,0,0"
+                                 FontSize="20" 
+                                 Foreground="White"
+                                 Style="{StaticResource EstiloBotonMenu}" 
+                                 IsChecked="True" >
                     </RadioButton>
+                    <RadioButton Content="Arduino"
+                                 Height="50"
+                                 Margin="10,30,0,0"
+                                 FontSize="20" 
+                                 Foreground="White"
+                                 Style="{StaticResource EstiloBotonMenu}" >
+                    </RadioButton>
+                    <RadioButton Content="Base de Datos"
+                                 Height="50"
+                                 Margin="10,30,0,0"
+                                 FontSize="20" 
+                                 Foreground="White"
+                                 Style="{StaticResource EstiloBotonMenu}" >
+                    </RadioButton>
+
                 </StackPanel>
 
-                <materialDesign:Card Grid.Column="1" Background="Transparent">
-                    <TextBlock x:Name="txtPrueba" FontSize="20">
+                <materialDesign:Card Grid.Column="1" Background="Transparent" HorizontalAlignment="Center" Width="1004">
+                    <!--<TextBlock x:Name="txtPrueba" FontSize="20">
                         
-                    </TextBlock>
+                    </TextBlock>-->
+                    <!--<StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                        <Border Width="100" Height="100" Background="Beige"/>
+                        <Border Width="100" Height="100" Background="Beige"/>
+                    </StackPanel>-->
+
+                    <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                        <StackPanel HorizontalAlignment="Stretch">
+                            <TextBlock Foreground="White" FontSize="20" Margin="15,0,0,20">
+                                Combobox
+                            </TextBlock>
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Border Width="480" Height="270" Background="Gray" CornerRadius="20" Margin="-5,10,15,40">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="10*"/>
+                                        <RowDefinition Height="90*"/>
+                                    </Grid.RowDefinitions>
+
+                                    <TextBlock Margin="25,10,0,0" FontSize="16" Foreground="White">
+                                        Temperatura
+                                    </TextBlock>
+                                    
+                                    <lvc:CartesianChart Grid.Row="1" Margin="5" Series="{Binding a}" />
+                                </Grid>
+                                
+                            </Border>
+                            <Border Width="480" Height="270" Background="Gray" CornerRadius="20" Margin="10,10,5,40">
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="10*"/>
+                                        <RowDefinition Height="90*"/>
+                                    </Grid.RowDefinitions>     
+
+                                    <TextBlock Margin="25,10,0,0" FontSize="16" Foreground="White">
+                                        Humedad
+                                    </TextBlock>
+
+                                    <lvc:CartesianChart Grid.Row="1" Margin="5" Series="{Binding b}" />
+                                </Grid>
+                            </Border>
+                        </StackPanel>
+
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Border Width="250" Height="250" Background="Gray" CornerRadius="40" Margin="0"/>
+                            <Border Width="250" Height="250" Background="Gray" CornerRadius="40" Margin="70,0,70,0"/>
+                            <Border Width="250" Height="250" Background="Gray" CornerRadius="40" Margin="0"/>
+                        </StackPanel>
+                    </StackPanel>
+
                 </materialDesign:Card>
 
             </Grid>
