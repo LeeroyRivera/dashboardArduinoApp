@@ -3,6 +3,7 @@ using LiveCharts;
 using LiveCharts.Wpf;
 using System;
 using System.IO.Ports;
+using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
 using System.Windows;
@@ -16,6 +17,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace dashboardArduinoApp
 {
@@ -27,19 +29,24 @@ namespace dashboardArduinoApp
         private Point startPoint;
         private Brush defaultBrushBtnSalir;
         private Brush defaultBrushBtnMinimizar;
-        SerialPort Arduino; bool ArduinoEnabled = false;
+
+        StringBuilder sb = new StringBuilder();
+        char LF = (char)10;
+
+        private ClaseArduino Arduino;
 
         public MainWindow()
         {
             InitializeComponent();
 
+            Arduino = new ClaseArduino();
+            Arduino.InicializarConexionArduino();
+            Arduino.Arduino1.DataReceived += Arduino_DataReceived;
+           // PruebaArduino();
+           // escrituraSerial();
+
             defaultBrushBtnSalir = BtnSalir.Background;
             defaultBrushBtnMinimizar = BtnMinimizar.Background;
-
-            Arduino = new SerialPort();
-            Arduino.PortName = "COM5";
-            Arduino.BaudRate = 9600;
-            Arduino.ReadTimeout = 1000;
 
             a = new SeriesCollection
             {
@@ -56,6 +63,65 @@ namespace dashboardArduinoApp
                 }
             };
             DataContext = this;
+        }
+
+        private void Arduino_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+
+            if (Arduino.InicializarConexionArduino())
+            {
+                try
+                {
+                    Task.Factory.StartNew(() =>
+                    {
+                        string Data = Arduino.LecturaSerial();
+
+                        foreach (char c in Data)
+                        {
+                            if (c == LF)
+                            {
+                                sb.Append(c);
+
+                                 string CurrentLine = sb.ToString();
+                                sb.Clear();
+                                escrituraSerial(CurrentLine);
+                                //do something with your response 'CurrentLine'
+
+                            }
+                            else
+                            {
+                                sb.Append(c);
+                            }
+                        }
+                        
+                    });
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+
+            /*if (Arduino.Arduino1.IsOpen)
+            {
+                try
+                {
+                    Task.Factory.StartNew(() =>
+                    {
+                        //ReadLine() i think only returns the port's buffer if there's a '\n' on the very end. if it's in
+                        //the middle... i dont think it gives one and ignores it, returning null.
+                        //This whole method might fire 2 or 3 times, and only the last time will it actually add a message... i think.
+                        escrituraSerial(Arduino.LecturaSerial());
+                    });
+                }
+                catch (Exception)
+                {
+
+                    throw;
+                }
+            }
+            */
         }
 
         public SeriesCollection a { get; set; }
@@ -122,49 +188,19 @@ namespace dashboardArduinoApp
             SystemCommands.MinimizeWindow(this);
         }
 
+        private void escrituraSerial(string x)
+        {
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                txtPruebaArduino.Text = x;
+
+            }));
+        }
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            Arduino.Close();
+           Arduino.CerrarPuertoArduino();
         }
-
-
-
-        private void RadioButton_Checked(object sender, RoutedEventArgs e)
-        {
-
-
-            //try
-            //{
-            //    Arduino.Open();
-            //}
-            //catch (Exception)
-            //{
-
-            //    throw;
-            //}
-
-            //string txt = string.Empty;
-
-            //new Thread(() =>
-            //{
-
-            //    while (!Arduino.IsOpen)
-            //    {
-            //        try
-            //        {
-            //            string txt = Arduino.ReadLine();
-
-
-            //        }
-            //        catch (Exception)
-            //        {
-
-            //            throw;
-            //        }
-            //    }
-            //    Dispatcher.BeginInvoke(() => txtPrueba.Text = txt);
-            //}).Start();
-        }
+            
     }
 }

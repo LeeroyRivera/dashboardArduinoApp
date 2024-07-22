@@ -117,7 +117,13 @@
                         </StackPanel>
 
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <Border Width="250" Height="250" Background="Gray" CornerRadius="40" Margin="0"/>
+                            
+                            <Border Width="250" Height="250" Background="Gray" CornerRadius="40" Margin="0">
+                                <TextBox Name="txtPruebaArduino" Margin="15">
+                                   hola
+                                </TextBox>
+                            </Border>
+                            
                             <Border Width="250" Height="250" Background="Gray" CornerRadius="40" Margin="70,0,70,0"/>
                             <Border Width="250" Height="250" Background="Gray" CornerRadius="40" Margin="0"/>
                         </StackPanel>
