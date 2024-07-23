@@ -14,7 +14,7 @@ namespace dashboardArduinoApp.Clases
 
         private class Conexion
         {
-            public static string conString = "server=186.32.239.67;port=3306;user=root;password=Aleksander0302;database=thezystemv2";
+            public static string conString = "server=186.32.239.66;port=3306;user=UserMicrocon;password=12345;database=proyectosensores";
         }
 
         public static MySqlConnection conectar()

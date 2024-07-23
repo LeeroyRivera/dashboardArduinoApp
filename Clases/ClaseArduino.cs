@@ -5,23 +5,23 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace dashboardArduinoApp.Clases
 {
     internal class ClaseArduino
     {
         private SerialPort Arduino;
-        private String puertoUSB = "COM6";
+        private String puertoUSB = "COM5";
         private Int32 puertoSerial = 9600;
         private Int32 tiempoEspera = 10000;
         private String registro = "";
 
         private Double senTemperatura;
         private Double senHumedad;
-        private Double senGas;
+        private Double gasSen;
         private Double senVoltaje;
         private Double senFotorresistencia;
-        
 
         public ClaseArduino(string? puertoUSB, int puertoSerial, int tiempoEspera)
         {
@@ -91,16 +91,30 @@ namespace dashboardArduinoApp.Clases
 
         }
 
-        public void DistribuirLecturas(string lecturaArduino) 
+        public string DistribuirLecturas(string x) 
         {
-            string[] lecturas = lecturaArduino.Split(",");
+            x.Trim();
+            x = x.Replace(" ", "");
+            string[] lecturas = x.Split(",");
 
-            SenTemperatura = Convert.ToDouble(lecturas[0]);
-            SenHumedad = Convert.ToDouble(lecturas[1]);
-            SenVoltaje = Convert.ToDouble(lecturas[2]);
-            SenGas = Convert.ToDouble(lecturas[3]);
-            SenFotorresistencia = Convert.ToDouble(lecturas[4]);
+            SenTemperatura = Convert.ToDouble(lecturas[1]);
+            SenHumedad = Convert.ToDouble(lecturas[2]);
+            SenVoltaje = Convert.ToDouble(lecturas[3]);
+            GasSen = Convert.ToDouble(lecturas[4]);
+            SenFotorresistencia = Convert.ToDouble(lecturas[5]);
+
+            return string.Concat(SenTemperatura, senHumedad, senFotorresistencia, senVoltaje , gasSen);
         }
+
+        public void InsertarRegidstrosDB()
+        {
+            string query;
+            query = $"INSERT INTO registros (Fecha, FechaHora, Temperatura, Humedad, Voltaje, Gas, Fotorresistencia) " +
+                $"VALUES (curdate(), now(), {SenTemperatura}, {SenHumedad}, {SenVoltaje}, {GasSen}, {SenFotorresistencia});";
+
+            ClaseConexion.EjecutarQuery(query);
+        }
+
 
         public string? PuertoUSB { get => puertoUSB; set => puertoUSB = value; }
         public int PuertoSerial { get => puertoSerial; set => puertoSerial = value; }
@@ -110,8 +124,8 @@ namespace dashboardArduinoApp.Clases
 
         public double SenTemperatura { get => senTemperatura; set => senTemperatura = value; }
         public double SenHumedad { get => senHumedad; set => senHumedad = value; }
-        public double SenGas { get => senGas; set => SenGas = value; }
         public double SenVoltaje { get => senVoltaje; set => senVoltaje = value; }
         public double SenFotorresistencia { get => senFotorresistencia; set => senFotorresistencia = value; }
+        public double GasSen { get => gasSen; set => gasSen = value; }
     }
 }

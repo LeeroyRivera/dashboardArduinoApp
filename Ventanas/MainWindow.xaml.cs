@@ -41,6 +41,8 @@ namespace dashboardArduinoApp
             InitializeComponent();
 
             Arduino = new ClaseArduino();
+            ClaseConexion.conectar();
+
             Arduino.InicializarConexionArduino();
             Arduino.Arduino1.DataReceived += Arduino_DataReceived;
            // PruebaArduino();
@@ -70,7 +72,6 @@ namespace dashboardArduinoApp
                     Values = new ChartValues<double> { 10, 5, 27, 14 }
                 }
             };
-            DataContext = this;
         }
 
         public class MeasureModel
@@ -96,11 +97,12 @@ namespace dashboardArduinoApp
                             {
                                 sb.Append(c);
 
-                                 string CurrentLine = sb.ToString();
+                                string CurrentLine = sb.ToString();
                                 sb.Clear();
-                                escrituraSerial(CurrentLine);
+                                Arduino.DistribuirLecturas(CurrentLine);
+                                Arduino.InsertarRegidstrosDB();
 
-
+                                //double x = Convert.ToDouble(Arduino.DistribuirLecturas(CurrentLine));
                             }
                             else
                             {
@@ -112,7 +114,6 @@ namespace dashboardArduinoApp
                 }
                 catch (Exception)
                 {
-
                     throw;
                 }
             }
@@ -202,14 +203,14 @@ namespace dashboardArduinoApp
             SystemCommands.MinimizeWindow(this);
         }
 
-        private void escrituraSerial(string x)
+        /*private void escrituraSerial(string x)
         {
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 txtPruebaArduino.Text = x;
 
             }));
-        }
+        }*/
 
         private void Window_Closed(object sender, EventArgs e)
         {
