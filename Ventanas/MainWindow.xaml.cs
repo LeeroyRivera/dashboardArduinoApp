@@ -1,5 +1,6 @@
 ﻿using dashboardArduinoApp.Clases;
 using LiveCharts;
+using LiveCharts.Configurations;
 using LiveCharts.Wpf;
 using System;
 using System.IO.Ports;
@@ -48,11 +49,18 @@ namespace dashboardArduinoApp
             defaultBrushBtnSalir = BtnSalir.Background;
             defaultBrushBtnMinimizar = BtnMinimizar.Background;
 
+            var mapper = Mappers.Xy<MeasureModel>()
+            .X(x => x.Value)
+            .Y(x => x.Value);
+
+            //save the mapper globally         
+            Charting.For<MeasureModel>(mapper);
+
             a = new SeriesCollection
             {
                 new LineSeries
                 {
-                    Values = new ChartValues<double> { 3, 5, 7, 4 }
+                    Values = new ChartValues<MeasureModel>()
                 }
             };
             b = new SeriesCollection
@@ -63,6 +71,12 @@ namespace dashboardArduinoApp
                 }
             };
             DataContext = this;
+        }
+
+        public class MeasureModel
+        {
+            public System.DateTime DateTime { get; set; }
+            public double Value { get; set; }
         }
 
         private void Arduino_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -85,7 +99,7 @@ namespace dashboardArduinoApp
                                  string CurrentLine = sb.ToString();
                                 sb.Clear();
                                 escrituraSerial(CurrentLine);
-                                //do something with your response 'CurrentLine'
+
 
                             }
                             else
