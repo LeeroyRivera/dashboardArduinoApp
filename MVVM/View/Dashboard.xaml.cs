@@ -16,6 +16,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static dashboardArduinoApp.MainWindow;
+using Google.Protobuf.WellKnownTypes;
 
 namespace dashboardArduinoApp.MVVM.View
 {
@@ -35,13 +36,8 @@ namespace dashboardArduinoApp.MVVM.View
             //save the mapper globally         
             Charting.For<MeasureModel>(mapper);
 
-            a = new SeriesCollection
-            {
-                new LineSeries
-                {
-                    Values = new ChartValues<MeasureModel>()
-                }
-            };
+            ValuesTime = new ChartValues<MeasureModel>();
+
             b = new SeriesCollection
             {
                 new LineSeries
@@ -49,10 +45,29 @@ namespace dashboardArduinoApp.MVVM.View
                     Values = new ChartValues<double> { 10, 5, 27, 14 }
                 }
             };
+
+            Task.Run(() => {
+
+                while (true) { 
+                    Thread.Sleep(500);
+
+                    ValuesTime.Add(new MeasureModel
+                    {
+                        DateTime = DateTime.Now
+                    }); 
+                
+                }
+
+            });
+
             DataContext = this;
         }
+
         public SeriesCollection a { get; set; }
         public SeriesCollection b { get; set; }
+
+        public ChartValues<MeasureModel> ValuesTime { get; set; }
+
         public class MeasureModel
         {
             public System.DateTime DateTime { get; set; }
