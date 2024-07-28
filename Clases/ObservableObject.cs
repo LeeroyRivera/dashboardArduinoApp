@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace dashboardArduinoApp.Clases
 {
-    class ObservableObject : INotifyPropertyChanged
+    class ObservableObjectViews : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler? PropertyChanged;
         protected void OnPropertyChanged([CallerMemberName] string name = null)

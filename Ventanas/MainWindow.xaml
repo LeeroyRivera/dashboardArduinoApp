@@ -5,7 +5,6 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:dashboardArduinoApp"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" x:Class="dashboardArduinoApp.MainWindow"
-        xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
         xmlns:viewModel="clr-namespace:dashboardArduinoApp.MVVM.ViewModel"
         mc:Ignorable="d"
         TextElement.Foreground="{DynamicResource MaterialDesignBody}"
@@ -80,9 +79,9 @@
                     </RadioButton>
 
                 </StackPanel>
-
-                <ContentControl Grid.Row="1" Grid.Column="1" Content="{Binding CurrentView}" Margin="10" DataContext="{Binding Mode=OneWay}" />
-
+                <Border Grid.Column="1" Margin="0,0,10,0">
+                    <ContentControl Grid.Column="1" Content="{Binding CurrentView}" Margin="10,10,10,10" DataContext="{Binding Mode=OneWay}" />
+                </Border>
             </Grid>
 
             <Border x:Name ="TopBorder" Grid.Row="0" Background="#FF1E1F22" Margin="10,10,10,0" CornerRadius="20,20,0,0" PreviewMouseLeftButtonDown="Border_PreviewMouseLeftButtonDown" PreviewMouseMove="Border_PreviewMouseMove"/>

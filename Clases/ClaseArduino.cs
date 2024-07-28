@@ -1,4 +1,5 @@
-﻿using System;
+﻿using dashboardArduinoApp.MVVM.View;
+using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
@@ -6,16 +7,18 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace dashboardArduinoApp.Clases
 {
-    internal class ClaseArduino
+    public sealed class ClaseArduino
     {
         private SerialPort Arduino;
         private String puertoUSB = "COM5";
         private Int32 puertoSerial = 9600;
         private Int32 tiempoEspera = 10000;
-        private String registro = "";
+        private String registro = string.Empty;
 
         private Double senTemperatura;
         private Double senHumedad;
@@ -23,7 +26,9 @@ namespace dashboardArduinoApp.Clases
         private Double senVoltaje;
         private Double senFotorresistencia;
 
-        public ClaseArduino(string? puertoUSB, int puertoSerial, int tiempoEspera)
+        private static readonly ClaseArduino instance = new();
+
+        private ClaseArduino(string? puertoUSB, int puertoSerial, int tiempoEspera)
         {
             this.Arduino1 = new SerialPort();
             this.puertoUSB = puertoUSB;
@@ -31,9 +36,10 @@ namespace dashboardArduinoApp.Clases
             this.tiempoEspera = tiempoEspera;
         }
 
-        public ClaseArduino()
+        private ClaseArduino()
         {
             this.Arduino1 = new SerialPort();
+            
         }
 
         public bool InicializarConexionArduino()
@@ -50,8 +56,9 @@ namespace dashboardArduinoApp.Clases
                     Arduino1.Open();
                     return true;
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    MessageBox.Show(ex.Message);
                     return false;
                     throw;
                 }
@@ -62,21 +69,16 @@ namespace dashboardArduinoApp.Clases
             }
         }
 
+        public static ClaseArduino GetClaseArduino()
+        {
+
+            return instance;
+        }
         public string LecturaSerial()
         {
-            if (Arduino1.IsOpen) {
-                try
-                {
-                    string x = Arduino.ReadExisting();
-                    return x;
-                }
-                catch (Exception)
-                {
-
-                    throw;
-                }
-            }
-            return "Error";
+            
+            return Arduino1.ReadTo("\n");
+            
         } 
 
         public bool CerrarPuertoArduino()

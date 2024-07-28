@@ -1,12 +1,10 @@
 ﻿using dashboardArduinoApp.Clases;
-using LiveCharts;
-using LiveCharts.Configurations;
-using LiveCharts.Wpf;
 using System;
 using System.IO.Ports;
 using System.Reflection;
 using System.Reflection.Emit;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -25,13 +23,14 @@ namespace dashboardArduinoApp
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
+
     public partial class MainWindow : Window
     {
         private Point startPoint;
         private Brush defaultBrushBtnSalir;
         private Brush defaultBrushBtnMinimizar;
-
         StringBuilder sb = new StringBuilder();
+
         char LF = (char)10;
 
         private ClaseArduino Arduino;
@@ -40,7 +39,7 @@ namespace dashboardArduinoApp
         {
             InitializeComponent();
 
-            Arduino = new ClaseArduino();
+            Arduino = ClaseArduino.GetClaseArduino();
             ClaseConexion.conectar();
 
             Arduino.InicializarConexionArduino();
@@ -50,34 +49,6 @@ namespace dashboardArduinoApp
 
             defaultBrushBtnSalir = BtnSalir.Background;
             defaultBrushBtnMinimizar = BtnMinimizar.Background;
-
-            var mapper = Mappers.Xy<MeasureModel>()
-            .X(x => x.Value)
-            .Y(x => x.Value);
-
-            //save the mapper globally         
-            Charting.For<MeasureModel>(mapper);
-
-            a = new SeriesCollection
-            {
-                new LineSeries
-                {
-                    Values = new ChartValues<MeasureModel>()
-                }
-            };
-            b = new SeriesCollection
-            {
-                new LineSeries
-                {
-                    Values = new ChartValues<double> { 10, 5, 27, 14 }
-                }
-            };
-        }
-
-        public class MeasureModel
-        {
-            public System.DateTime DateTime { get; set; }
-            public double Value { get; set; }
         }
 
         private void Arduino_DataReceived(object sender, SerialDataReceivedEventArgs e)
@@ -87,37 +58,36 @@ namespace dashboardArduinoApp
             {
                 try
                 {
-                    Task.Factory.StartNew(() =>
-                    {
-                        string Data = Arduino.LecturaSerial();
-
-                        foreach (char c in Data)
-                        {
-                            if (c == LF)
+                    string Data = Arduino.LecturaSerial();
+                    Globales.regsitro = Data;
+                            char LF = 'y';
+                            foreach (char c in Data)
                             {
-                                sb.Append(c);
+                                if (c == LF)
+                                {
+                                    sb.Append(c);
+                                    string currentLine = sb.ToString();
+                                    sb.Clear();
 
-                                string CurrentLine = sb.ToString();
-                                sb.Clear();
-                                Arduino.DistribuirLecturas(CurrentLine);
-                                Arduino.InsertarRegidstrosDB();
-
-                                //double x = Convert.ToDouble(Arduino.DistribuirLecturas(CurrentLine));
-                            }
-                            else
-                            {
-                                sb.Append(c);
-                            }
-                        }
-                        
-                    });
+                                    Arduino.DistribuirLecturas(currentLine);
+                                    Arduino.InsertarRegidstrosDB();
+                                    //double x = Convert.ToDouble(Arduino.DistribuirLecturas(CurrentLine));
+                                }
+                                else if (Regex.IsMatch(c.ToString(), @"[0-9.,]"))
+                                {
+                                    sb.Append(c);
+                                }
+                            }         
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    throw;
+                    throw new Exception("Error al ejecutar la tarea" + ex.Message);
                 }
             }
-
+            else
+            {
+                MessageBox.Show("Conecte el arduino");
+            }
             /*if (Arduino.Arduino1.IsOpen)
             {
                 try
@@ -138,9 +108,6 @@ namespace dashboardArduinoApp
             }
             */
         }
-
-        public SeriesCollection a { get; set; }
-        public SeriesCollection b { get; set; }
 
 
         private void Border_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -203,19 +170,11 @@ namespace dashboardArduinoApp
             SystemCommands.MinimizeWindow(this);
         }
 
-        /*private void escrituraSerial(string x)
-        {
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                txtPruebaArduino.Text = x;
-
-            }));
-        }*/
 
         private void Window_Closed(object sender, EventArgs e)
         {
            Arduino.CerrarPuertoArduino();
         }
-            
+
     }
 }
