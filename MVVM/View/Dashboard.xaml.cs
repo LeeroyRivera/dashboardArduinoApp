@@ -1,6 +1,4 @@
-﻿using LiveCharts.Configurations;
-using LiveCharts.Wpf;
-using LiveCharts;
+﻿
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,62 +15,38 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static dashboardArduinoApp.MainWindow;
 using Google.Protobuf.WellKnownTypes;
+using System.ComponentModel;
+using System.Diagnostics;
+using dashboardArduinoApp.Clases;
 
 namespace dashboardArduinoApp.MVVM.View
 {
     /// <summary>
     /// Interaction logic for Dashboard.xaml
     /// </summary>
-    public partial class Dashboard : UserControl
+    public partial class Dashboard : UserControl, INotifyPropertyChanged
     {
+
         public Dashboard()
         {
             InitializeComponent();
-
-            var mapper = Mappers.Xy<MeasureModel>()
-            .X(x => x.Value)
-            .Y(x => x.Value);
-
-            //save the mapper globally         
-            Charting.For<MeasureModel>(mapper);
-
-            ValuesTime = new ChartValues<MeasureModel>();
-
-            b = new SeriesCollection
-            {
-                new LineSeries
-                {
-                    Values = new ChartValues<double> { 10, 5, 27, 14 }
-                }
-            };
-
-            Task.Run(() => {
-
-                while (true) { 
-                    Thread.Sleep(500);
-
-                    ValuesTime.Add(new MeasureModel
-                    {
-                        DateTime = DateTime.Now
-                    }); 
-                
-                }
-
-            });
-
-            DataContext = this;
         }
 
-        public SeriesCollection a { get; set; }
-        public SeriesCollection b { get; set; }
+        #region INotifyPropertyChanged implementation
 
-        public ChartValues<MeasureModel> ValuesTime { get; set; }
+        public event PropertyChangedEventHandler PropertyChanged;
 
-        public class MeasureModel
+        protected virtual void OnPropertyChanged(string propertyName = null)
         {
-            public System.DateTime DateTime { get; set; }
-            public double Value { get; set; }
+            if (PropertyChanged != null)
+                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        #endregion
+    }
+    public class MeasureModel
+    {
+        public DateTime ElapsedMilliseconds { get; set; }
+        public double Value { get; set; }
     }
 }

@@ -5,11 +5,17 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:dashboardArduinoApp.MVVM.View"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
-             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:constantChanges="clr-namespace:dashboardArduinoApp.MVVM.View"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
+             xmlns:viewModel="clr-namespace:dashboardArduinoApp.MVVM.ViewModel"
              mc:Ignorable="d" 
-             d:DesignHeight="720" d:DesignWidth="1280">
+             d:DesignHeight="644" d:DesignWidth="1024">
+    
+    <UserControl.DataContext>
+        <viewModel:DashboardViewModel/>
+    </UserControl.DataContext>
+    
     <Grid>
-
 
         <materialDesign:Card Grid.Column="1" Background="Transparent" HorizontalAlignment="Center" Width="1004">
             
@@ -22,28 +28,38 @@
                     </StackPanel>-->
 
             <StackPanel Orientation="Vertical" VerticalAlignment="Center">
+                
                 <StackPanel HorizontalAlignment="Stretch">
                     <TextBlock Foreground="White" FontSize="20" Margin="15,0,0,20">
                                 Combobox
                     </TextBlock>
                 </StackPanel>
+                
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <Border Width="480" Height="270" Background="Gray" CornerRadius="20" Margin="-5,10,15,40">
+                    <Border Width="480" Height="270" Background="Gray" CornerRadius="20" Margin="15">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="10*"/>
-                                <RowDefinition Height="90*"/>
+                                <RowDefinition Height="80*"/>
                             </Grid.RowDefinitions>
 
                             <TextBlock Margin="25,10,0,0" FontSize="16" Foreground="White">
                                         Temperatura
                             </TextBlock>
 
-                            <lvc:CartesianChart Grid.Row="1" Margin="5" Series="{Binding a}" />
-                        </Grid>
+                            <lvc:CartesianChart
+                                SyncContext="{Binding Sync}"
+                                Series="{Binding Series}"
+                                XAxes="{Binding XAxes}"
+                                LegendPosition="Left"
+                                Grid.Row="1"
+                                Margin="10">
+                            </lvc:CartesianChart>
 
+                        </Grid>
                     </Border>
-                    <Border Width="480" Height="270" Background="Gray" CornerRadius="20" Margin="10,10,5,40">
+                    
+                    <Border Width="480" Height="270" Background="Gray" CornerRadius="20" Margin="15">
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="10*"/>
@@ -54,7 +70,17 @@
                                         Humedad
                             </TextBlock>
 
-                            <lvc:CartesianChart Grid.Row="1" Margin="5" Series="{Binding b}" />
+                            <lvc:CartesianChart
+                                SyncContext="{Binding Sync}"
+                                Series="{Binding Series2}"
+                                XAxes="{Binding XAxes}"
+                                YAxes="{Binding YAxes}"
+                                Grid.Row="1"
+                                Margin="10">
+                            </lvc:CartesianChart>
+
+                            <!--<lvc:CartesianChart Grid.Row="1" Margin="5" Series="{Binding b}" />-->
+                            
                         </Grid>
                     </Border>
                 </StackPanel>
@@ -63,7 +89,7 @@
 
                     <Border Width="250" Height="250" Background="Gray" CornerRadius="40" Margin="0">
                         <TextBox Name="txtPruebaArduino" Margin="15">
-                            hola
+                            
                         </TextBox>
                     </Border>
 

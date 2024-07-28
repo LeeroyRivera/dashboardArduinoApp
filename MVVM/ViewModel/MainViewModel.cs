@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace dashboardArduinoApp.MVVM.ViewModel
 {
-    internal class MainViewModel : ObservableObject
+    internal class MainViewModel : ObservableObjectViews
     {
 
         private object _currentView;

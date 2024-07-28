@@ -5,9 +5,49 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:dashboardArduinoApp.MVVM.View"
              mc:Ignorable="d" 
-             d:DesignHeight="720" d:DesignWidth="1280"
-             Background="DarkOliveGreen">
+             d:DesignHeight="644" d:DesignWidth="1024"
+             Background="Transparent">
     <Grid>
-            
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="80*"/>
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="0" Margin="10">
+            <TextBlock FontSize="30" Foreground="White" VerticalAlignment="Center" Margin="40,0,40,0">
+                Arduino Nano
+            </TextBlock>
+
+            <TextBlock FontSize="30" Foreground="White" VerticalAlignment="Center" Margin="40,0,40,0">
+                Puerto USB
+            </TextBlock>
+
+            <TextBlock FontSize="30" Foreground="White" VerticalAlignment="Center" Margin="40,0,40,0">
+                Puerto Serial
+            </TextBlock>
+
+
+
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="1" Margin="10">
+            <Button Content="Conectar" Margin="40,0,40,0" Grid.Row="1">
+
+            </Button>
+
+            <Button Content="Desconectar" Margin="40,0,40,0" Grid.Row="1">
+
+            </Button>
+        </StackPanel>
+        
+        
+        <Border Grid.Row="2" Margin="20" Background="DarkBlue" CornerRadius="50">
+            <TextBlock Name="tbxArduino" Margin="30" Foreground="White" FontSize="20">
+                Holaaaaaaaaaaaaaaaaaaaaaaa
+            </TextBlock>
+        </Border>
+
+
     </Grid>
 </UserControl>
