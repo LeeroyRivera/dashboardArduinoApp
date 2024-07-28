@@ -12,6 +12,7 @@
 
 
         <materialDesign:Card Grid.Column="1" Background="Transparent" HorizontalAlignment="Center" Width="1004">
+            
             <!--<TextBlock x:Name="txtPrueba" FontSize="20">
                         
                     </TextBlock>-->
